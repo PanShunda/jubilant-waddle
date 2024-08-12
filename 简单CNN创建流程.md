@@ -36,7 +36,7 @@ class Tudui(nn.Module):
         x = self.model(x)
         return x
 
-#作为main函数会执行以下操作
+#为这个类设计方法
 if __name__ == '__main__':
     tudui = Tudui()
     input = torch.ones((64, 3, 32, 32))
