@@ -87,9 +87,12 @@ test_dataloader = DataLoader(test_data, batch_size=64)
 ```python
 # 创建网络模型
 tudui = Tudui()
-
+# 利用GPU进行加速
+mynet = tudui.cuda()
 # 损失函数
 loss_fn = nn.CrossEntropyLoss()
+# 利用GPU进行加速
+loss_fn = loss_fn.cuda()
 ```
 
 
@@ -138,6 +141,10 @@ for i in range(epoch):
     tudui.train()
     for data in train_dataloader:
         imgs, targets = data
+        #利用GPU加速
+        img = img.cuda()
+        targets = targets.cuda()
+        
         outputs = tudui(imgs)
         loss = loss_fn(outputs, targets)
 
@@ -167,6 +174,10 @@ for i in range(epoch):
         for data in test_dataloader:
             # 获取已经被转换成tensor的 imgs 和标签 targets
             imgs, targets = data
+            #利用GPU加速
+            img = img.cuda()
+        	targets = targets.cuda()
+        
             outputs = tudui(imgs)
             #计算损失值并求和
             loss = loss_fn(outputs, targets)
@@ -180,7 +191,7 @@ for i in range(epoch):
     writer.add_scalar("test_loss", total_test_loss, total_test_step)
     writer.add_scalar("test_accuracy", total_accuracy/test_data_size, total_test_step)
     total_test_step = total_test_step + 1
-
+	# 训练完成后保存模型
     torch.save(tudui, "tudui_{}.pth".format(i))
     print("模型已保存")
 ```
@@ -192,3 +203,41 @@ for i in range(epoch):
 ```python
 writer.close()
 ```
+
+
+
+### CNN训练完毕后的验证
+
+假设保存的网络模型为my_model_14.pth
+
+```python
+import torch
+import torchvision
+from PIL import Image
+from torch import nn
+
+# 在网络上找到的截图命名为qw.png 并将其放入imgs文件夹
+image_path = "../imgs/qw.png"
+image = Image.open(image_path)
+print(image)
+# 将qw转换为RGB三通道，并将其转换为tensor模式
+image = image.convert('RGB')
+transform = torchvision.transforms.Compose([torchvision.transforms.Resize((32, 32)),
+                                            torchvision.transforms.ToTensor()])
+
+image = transform(image)
+print(image.shape)
+
+# 读取网络模型，并对其进行验证
+model = torch.load("my_model_14.pth", map_location=torch.device('cpu'))
+print(model)
+image = torch.reshape(image, (1, 3, 32, 32))
+model.eval()
+with torch.no_grad():
+    output = model(image)
+print(output)
+
+print(output.argmax(1))
+
+```
+
