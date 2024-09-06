@@ -130,6 +130,7 @@ class lt
    }
    function __wakeup()
    {
+       # 此处污染impo属性 需要跳过wakeup
       $this->impo = new dxg;
       return $this->impo->fmm();
    }
@@ -137,6 +138,7 @@ class lt
    function __toString()
    {
       if (isset($this->impo) && md5($this->md51) == md5($this->md52) && $this->md51 != $this->md52)
+          # 此处可以调用impo属性的fmm方法 只用是impo属性为fin对象即可
          return $this->impo->fmm();
    }
    function __destruct()
@@ -164,11 +166,25 @@ if (isset($_GET['NSS'])) {
 }
 ```
 
+思路：
+
+先找到能找到能回显flag的点位
+
+此处点位在调用fin类中的fmm方法，只需将$b="system" title="cat /flag" 即可
+
+如何调用fin类中的fmm方法呢？再往上看 可知在lt类中的__toSrting函数会调用fmm方法
+
+我们需要构造一个lt类并将其反序列化即可。
+
+
+
+
+
 
 
 ## PHP伪协议
 
-如何传入文件？
+如何回显文件？
 
 system(cat /flag)
 
@@ -193,6 +209,14 @@ if($_POST['wqh']!==$_POST['dsy']&&md5($_POST['wqh'])===md5($_POST['dsy'])){
 ```
 
 此时传入两个数组即可，因为数组可以被传入md5，但是会返回NULL。
+
+#### md5弱比较绕过
+
+```php
+$first==md5($first)
+```
+
+$first=0e215962017
 
 #### 双写绕过
 
