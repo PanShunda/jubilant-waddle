@@ -41,6 +41,10 @@ union select 1,database(),group_concat(table_name)from information_schema.tables
    空格：转换为/**/
 
    union：双写为ununionion
+   
+   #### sqlite注入
+   
+   [sqlite注入的一点总结 - 先知社区 (aliyun.com)](https://xz.aliyun.com/t/8627?u_atoken=100bccca0fa7b41dc93d4d361afe51c9&u_asig=1a0c39a017268046181531556e0035)
 
 #### 布尔盲注
 
@@ -225,6 +229,20 @@ $str = preg_replace('/NSSCTF/',"",$_GET['str']);
 ```
 
 这里屏蔽了NSSCTF 只要我们这样写： NSSNSSCTFCTF 中间的NSSCTF就会被替换，留存下来的字符仍然是NSSCTF。
+
+#### 通配符绕过
+
+```php
+if(!preg_match("/\;|\&|\\$|\x09|\x26|more|less|head|sort|tail|sed|cut|awk|strings|od|php|ping|flag/i", $cmd)){
+        return($cmd);
+    } 
+
+shell_exec($cmd); 
+```
+
+此时可以用通配符将flag写入fuck.txt 再直接从url中读取fuck.txt即可
+
+传参：?cmd=cat /f* > fuck.txt
 
 ## XXF
 
