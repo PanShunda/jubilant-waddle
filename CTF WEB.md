@@ -93,6 +93,8 @@ tostring函数可以在echo中被调用
 
 ## PHP伪协议
 
+https://blog.csdn.net/weixin_51735061/article/details/123156046
+
 如何回显文件？
 
 system(cat /flag)

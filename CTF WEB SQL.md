@@ -24,6 +24,11 @@
 
   ||
 
+- md5+sql绕过
+- select * from 'admin' where password=md5($pass,true)
+- 传入 password=ffifdyop 即可 原理如下
+- ![image-20240930135944536](CTF WEB SQL.assets/image-20240930135944536.png)
+
 ### 回显位数不够
 
 - 使用截断函数进行绕过
