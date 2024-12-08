@@ -210,3 +210,26 @@ python sqlmap.py -u "http://node4.anna.nssctf.cn:28366/?id=1" --dump
 
   适用于Microsoft Access数据库（没有`information_schema`数据库）
 
+#### 堆叠注入
+
+只有再union select 被过滤时可以使用。
+
+具体原理是在某些后端，堆叠激活可以使用，用分号;将两个sql查询语句隔开可以同时执行两个语句。
+
+同时 在select被过滤时 我们可以使用HANDLER来代替。
+
+先使用 show databases; show tables找到目标表名
+
+具体使用方法：
+HANDLER [表名] OPEN;语句打开一个表，使其可以使用后续HANDLER [表名] READ；该表对象未被其他会话共享，并且在会话调用HANDLER [表名] CLOSE;或会话终止之前不会关闭
+
+这几个HANDLER语句需要用分号隔开并一起执行。
+
+例如：当我们知道flag存放在FlagHere表中时，我们可以构造payload1’；
+
+HANDLER FlagHere OPEN;
+
+HANDLER FlagHere READ FIRST;　　
+
+HANDLER FlagHere close;#
+
