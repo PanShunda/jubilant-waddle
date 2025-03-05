@@ -233,3 +233,6 @@ HANDLER FlagHere READ FIRST;　　
 
 HANDLER FlagHere close;#
 
+## 注入点
+
+当网页可以测试你的登录次数时，也许ip为注入点（利用抓包修改）

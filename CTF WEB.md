@@ -4,6 +4,16 @@
 
 见 CTF WEB SQL
 
+当一个web没有用数据库存储数据时，可以考虑能不能找到eval()函数来执行scandir("/")函数（返回指定目录中的文件和目录的数组）
+
+并用var_dump()：输出变量的相关信息来实现。
+
+举例：var_dump(scandir(/))如果/被过滤了可以考虑使用ASCII码来替代 如：var_dump(scandir(chr(47)))
+
+找到需要的文件后再使用var_dump(file_get_contents(flag))来实现。
+
+注意：eval()函数可以执行多条语句，用；隔开即可。
+
 ## 反序列化
 
 如何跳过__wakeup函数？
